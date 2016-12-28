@@ -11,7 +11,7 @@ var curd = mongoose.model('employeeModel', {
 		DOB:String
     },'employee');
 router.get('/', function(req, res, next) {
-	res.sendfile('public/app.html');
+	res.sendfile('views/app.html');
   //res.render('index', { title: 'Express' });
 });
 
