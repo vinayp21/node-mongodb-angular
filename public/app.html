@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<script>
+var app= angular.module('myApp', []);
+app.controller('testController', function($scope,$http){
+	$scope.myvariable="hi";
+	this.myvar="hello world!!";
+	var self=this;
+	$http.get('http://127.0.0.1:3000/getAllEmployees').success(function(data){
+		//this.empId=data[0].id;
+		self.empDetails=data;
+	});
+		
+	this.addEmployee= function(){
+	var obj={
+		empName : this.empName,
+		empEmail:this.empEmail,
+		empSalary:parseInt(this.empSalary),
+		designation:this.designation,
+		DOB:this.dob,
+		};
+		$http.post('http://127.0.0.1:3000/addEmployee',obj,null).then(function(data){
+		self.empDetails=data.data;
+	});
+	};
+	this.deleteRecord= function(id){
+		$http.delete('http://127.0.0.1:3000/deleteEmployee/'+id).success(function(data){
+			self.empDetails=data;
+		});
+	};
+});
+</script>
+
+</head>
+<body ng-app="myApp">
+<div ng-controller="testController as ctrl">
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+		<div>
+		<label style="width:200px">Name</label><input type="text" name= "empname" ng-model="ctrl.empName"/>
+		</div>
+		<div>
+		<label style="width:200px">Email</label><input type="text" name= "empname" ng-model="ctrl.empEmail"/>
+		</div>
+		<div>
+		<label style="width:200px">Salary</label><input type="number" name= "empname" ng-model="ctrl.empSalary"/>
+		</div>
+		<div>
+		<label style="width:200px">Designation</label><input type="text" name= "empname" ng-model="ctrl.designation"/>
+		</div>
+		<div>
+		<label style="width:200px">DOB</label><input type="text" name= "empname" ng-model="ctrl.dob"/>
+		</div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.addEmployee()">Submit</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<h2 style="text-align:center">Employee Database</h2>
+<div>
+<table class="table">
+<tr>
+<th>
+Name
+</th>
+<th>
+Email
+</th>
+<th>
+Designation
+</th>
+<th>
+Salary
+</th>
+<th>
+DOB
+</th>
+<th>
+Delete
+</th>
+</tr>
+<tr ng-repeat="emp in ctrl.empDetails">
+<td>
+{{emp.empName}}
+</td>
+<td>
+{{emp.empEmail}}
+</td>
+<td>
+{{emp.designation}}
+</td>
+<td>
+{{emp.empSalary}}
+</td>
+<td>
+{{emp.DOB}}
+</td>
+<td ng-click="ctrl.deleteRecord(emp._id)">
+X
+</td>
+</tr>
+</table>
+</div>
+<button data-toggle="modal" data-target="#myModal">add Employee</button>
+</div>
+</body>
+
+</html>
